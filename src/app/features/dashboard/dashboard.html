@@ -1,0 +1,69 @@
+<app-layout>
+  @if (dashboardData$ | async; as data) {
+    <div class="p-6">
+      <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="border rounded p-4">
+          <h2>Total Products</h2>
+          <p class="text-3xl">
+            {{ data.stats.totalProducts }}
+          </p>
+        </div>
+
+        <div class="border rounded p-4">
+          <h2>Low Stock</h2>
+          <p class="text-3xl">
+            {{ data.stats.lowStockProducts }}
+          </p>
+        </div>
+
+        <div class="border rounded p-4">
+          <h2>Inventory Value</h2>
+          <p class="text-3xl">₱{{ data.stats.totalInventoryValue }}</p>
+        </div>
+
+        <div class="border rounded p-4">
+          <h2>Categories</h2>
+          <p class="text-3xl">
+            {{ data.stats.totalCategories }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Low Stock Products -->
+
+      <div class="mt-6 border rounded p-4">
+        <h2 class="text-xl font-semibold mb-4">Low Stock Products</h2>
+
+        @for (product of data.lowStockProducts; track product._id) {
+          <div class="flex justify-between border-b py-2">
+            <span>
+              {{ product.name }}
+            </span>
+
+            <span> Qty: {{ product.quantity }} </span>
+          </div>
+        }
+      </div>
+
+      <!-- Recent Activity -->
+
+      <div class="mt-6 border rounded p-4">
+        <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
+
+        @for (log of data.recentLogs; track log._id) {
+          <div class="flex justify-between border-b py-2">
+            <span>
+              {{ log.action }}
+            </span>
+
+            <span>
+              {{ log.product?.name }}
+            </span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</app-layout>

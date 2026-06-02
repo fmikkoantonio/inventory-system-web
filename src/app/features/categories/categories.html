@@ -1,0 +1,35 @@
+<app-layout>
+  <div class="p-6">
+    <h1 class="text-3xl font-bold mb-6">Categories</h1>
+
+    <div class="flex gap-2 mb-6">
+      <input
+        [(ngModel)]="categoryName"
+        placeholder="Category name"
+        class="border p-2 rounded flex-1"
+      />
+
+      <button (click)="createCategory()" class="bg-black text-white px-4 py-2 rounded">
+        Add Category
+      </button>
+    </div>
+
+    <div class="border rounded">
+      @for (category of categories; track category._id) {
+        <div>
+          @if (editingCategoryId === category._id) {
+            <input [(ngModel)]="editingName" class="border p-2 rounded" />
+
+            <button (click)="saveEdit()">Save</button>
+          } @else {
+            {{ category.name }}
+
+            <button (click)="startEdit(category)">Edit</button>
+
+            <button (click)="deleteCategory(category._id)">Delete</button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</app-layout>

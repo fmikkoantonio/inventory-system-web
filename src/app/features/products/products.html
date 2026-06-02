@@ -1,0 +1,112 @@
+<app-layout>
+  @if (isLoading) {
+    <div>Loading...</div>
+  } @else {
+    <div class="p-6">
+      <h1 class="text-3xl font-bold mb-6">Products</h1>
+      <a routerLink="/products/new" class="border px-4 py-2 rounded"> Add Product </a>
+
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="Search products..."
+          [(ngModel)]="search"
+          class="border p-2 rounded w-full"
+        />
+        <button (click)="loadProducts()" class="border px-4 py-2 rounded">Search</button>
+      </div>
+      <table class="w-full border">
+        <thead>
+          <tr>
+            <th class="border p-2">Image</th>
+            <th class="border p-2">Name</th>
+            <th class="border p-2">SKU</th>
+            <th class="border p-2">Category</th>
+            <th class="border p-2">Quantity</th>
+            <th class="border p-2">Price</th>
+            <th class="border p-2">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (product of products; track product._id) {
+            <tr>
+              <td class="border p-2">
+                <img
+                  [src]="'http://localhost:5000' + product.image"
+                  class="w-16 h-16 object-cover rounded"
+                />
+              </td>
+              <td class="border p-2">
+                {{ product.name }}
+              </td>
+
+              <td class="border p-2">
+                {{ product.sku }}
+              </td>
+
+              <td class="border p-2">
+                {{ product.category?.name || 'Uncategorized' }}
+              </td>
+
+              <td class="border p-2">
+                {{ product.quantity }}
+              </td>
+
+              <td class="border p-2">
+                {{ product.price }}
+              </td>
+
+              <td class="border p-2">
+                <button
+                  [routerLink]="['/products/edit', product._id]"
+                  class="border px-3 py-1 rounded mr-2"
+                >
+                  Edit
+                </button>
+
+                <button (click)="deleteProduct(product._id)" class="border px-3 py-1 rounded">
+                  Delete
+                </button>
+                <button (click)="openStockModal(product, 'IN')" class="border px-3 py-1 rounded">
+                  Stock In
+                </button>
+
+                <button (click)="openStockModal(product, 'OUT')" class="border px-3 py-1 rounded">
+                  Stock Out
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="flex gap-2 mt-4">
+        <button (click)="previousPage()" class="border px-4 py-2 rounded">Previous</button>
+
+        <button (click)="nextPage()" class="border px-4 py-2 rounded">Next</button>
+      </div>
+    </div>
+
+    @if (showStockModal) {
+      <div class="fixed inset-0 flex items-center justify-center bg-black/50">
+        <div class="bg-white p-6 rounded">
+          <h2 class="text-xl font-bold mb-4">
+            {{ stockType === 'IN' ? 'Stock In' : 'Stock Out' }}
+          </h2>
+
+          <input type="number" [(ngModel)]="stockQuantity" class="border p-2 rounded" />
+
+          <div class="mt-4 flex gap-2">
+            <button (click)="submitStockTransaction()" class="border px-4 py-2 rounded">
+              Save
+            </button>
+
+            <button (click)="showStockModal = false" class="border px-4 py-2 rounded">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  }
+</app-layout>

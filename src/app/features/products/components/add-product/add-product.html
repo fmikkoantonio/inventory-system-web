@@ -1,0 +1,31 @@
+<div class="max-w-lg mx-auto">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <input formControlName="name" placeholder="Name" class="w-full border p-2 rounded" />
+
+    <input formControlName="sku" placeholder="SKU" class="w-full border p-2 rounded" />
+
+    <textarea
+      formControlName="description"
+      placeholder="Description"
+      class="w-full border p-2 rounded"
+    ></textarea>
+
+    <input type="number" formControlName="quantity" class="w-full border p-2 rounded" />
+
+    <input type="number" formControlName="price" class="w-full border p-2 rounded" />
+
+    <select formControlName="category" class="w-full border p-2 rounded">
+      <option value="">Select Category</option>
+
+      @for (category of categories; track category._id) {
+        <option [value]="category._id">
+          {{ category.name }}
+        </option>
+      }
+    </select>
+
+    <input type="file" (change)="onFileSelected($event)" />
+
+    <button type="submit" class="bg-black text-white px-4 py-2 rounded">Create Product</button>
+  </form>
+</div>

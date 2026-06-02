@@ -1,0 +1,38 @@
+<app-layout>
+  <div class="p-6">
+    <h1 class="text-3xl font-bold mb-6">Activity Logs</h1>
+
+    <table class="w-full border">
+      <thead>
+        <tr>
+          <th class="border p-2">Date</th>
+          <th class="border p-2">User</th>
+          <th class="border p-2">Action</th>
+          <th class="border p-2">Product</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (log of logs; track log._id) {
+          <tr>
+            <td class="border p-2">
+              {{ log.createdAt }}
+            </td>
+
+            <td class="border p-2">
+              {{ log.user?.name }}
+            </td>
+
+            <td class="border p-2">
+              {{ log.action }}
+            </td>
+
+            <td class="border p-2">
+              {{ log.product?.name }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</app-layout>
