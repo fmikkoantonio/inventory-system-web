@@ -22,6 +22,10 @@ export class AuthService {
     );
   }
 
+  register(credentials: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/register`, credentials);
+  }
+
   logout() {
     localStorage.clear();
   }
