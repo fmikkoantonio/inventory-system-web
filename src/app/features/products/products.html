@@ -32,10 +32,7 @@
           @for (product of products; track product._id) {
             <tr>
               <td class="border p-2">
-                <img
-                  [src]="'http://localhost:5000' + product.image"
-                  class="w-16 h-16 object-cover rounded"
-                />
+                <img [src]="product.image" class="w-16 h-16 object-cover rounded" />
               </td>
               <td class="border p-2">
                 {{ product.name }}
