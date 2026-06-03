@@ -2,16 +2,33 @@ import { Component, OnInit, inject } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../../core/services/product.service';
 import { CategoryService } from '../../../../core/services/category.service';
+import { LayoutComponent } from '../../../../shared/layout/layout';
+import { ButtonModule } from 'primeng/button';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-edit-product',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    LayoutComponent,
+    RouterLink,
+
+    ButtonModule,
+    InputTextModule,
+    InputNumberModule,
+    SelectModule,
+    TextareaModule,
+  ],
   templateUrl: './edit-product.html',
 })
 export class EditProductComponent implements OnInit {
@@ -28,6 +45,12 @@ export class EditProductComponent implements OnInit {
   productId = '';
 
   categories: any[] = [];
+
+  isLoading = false;
+
+  imagePreview: string | null = null;
+
+  currentImage = '';
 
   selectedFile: File | null = null;
 
@@ -69,15 +92,13 @@ export class EditProductComponent implements OnInit {
   loadProduct() {
     this.productService.getProductById(this.productId).subscribe({
       next: (product: any) => {
+        this.currentImage = product.image;
+
         this.productForm.patchValue({
           name: product.name,
-
           sku: product.sku,
-
           description: product.description,
-
           price: product.price,
-
           category: product.category?._id,
         });
       },
@@ -91,13 +112,23 @@ export class EditProductComponent implements OnInit {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
 
-    if (input.files && input.files.length > 0) {
+    if (input.files?.length) {
       this.selectedFile = input.files[0];
+
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        this.imagePreview = reader.result as string;
+      };
+
+      reader.readAsDataURL(this.selectedFile);
     }
   }
 
   onSubmit() {
     if (this.productForm.invalid) return;
+
+    this.isLoading = true;
 
     const formData = new FormData();
 
@@ -116,6 +147,7 @@ export class EditProductComponent implements OnInit {
 
       error: (err) => {
         console.error(err);
+        this.isLoading = false;
       },
     });
   }

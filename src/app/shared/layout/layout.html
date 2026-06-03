@@ -1,20 +1,154 @@
-<div class="flex min-h-screen">
-  <aside class="w-64 bg-gray-900 text-white p-4">
-    <h1 class="text-2xl font-bold mb-8">Inventory System</h1>
+<div
+  class="min-h-screen bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300"
+>
+  <!-- Mobile Header -->
+  <header
+    class="lg:hidden flex items-center justify-between bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 py-4 sticky top-0 z-40"
+  >
+    <div>
+      <h1 class="font-bold text-slate-800 dark:text-slate-100">Inventory System</h1>
 
-    <nav class="space-y-2">
-      <a routerLink="/dashboard" class="block p-2 rounded hover:bg-gray-800"> Dashboard </a>
+      <p class="text-xs text-slate-500 dark:text-slate-400">Management Dashboard</p>
+    </div>
 
-      <a routerLink="/products" class="block p-2 rounded hover:bg-gray-800"> Products </a>
+    <div class="flex items-center gap-2">
+      <button
+        (click)="themeService.toggle()"
+        class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+      >
+        {{ themeService.isDark() ? '☀️' : '🌙' }}
+      </button>
 
-      <a routerLink="/categories" class="block p-2 rounded hover:bg-gray-800"> Categories </a>
+      <p-button icon="pi pi-bars" [text]="true" (onClick)="sidebarOpen = true" />
+    </div>
+  </header>
 
-      <a routerLink="/activity" class="block p-2 rounded hover:bg-gray-800"> Activity Logs </a>
-    </nav>
-    <button (click)="logout()" class="mt-8 p-2 rounded bg-red-600">Logout</button>
-  </aside>
+  <div class="flex">
+    <!-- Mobile Drawer -->
+    <p-drawer [(visible)]="sidebarOpen" position="left" styleClass="w-72" class="lg:hidden">
+      <ng-template #header>
+        <div>
+          <h1 class="text-xl font-bold">Inventory System</h1>
 
-  <main class="flex-1 p-6">
-    <ng-content />
-  </main>
+          <p class="text-sm opacity-70">Management Dashboard</p>
+        </div>
+      </ng-template>
+
+      <nav class="mt-4 space-y-1">
+        <a
+          routerLink="/dashboard"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          (click)="sidebarOpen = false"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/products"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          (click)="sidebarOpen = false"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Products
+        </a>
+
+        <a
+          routerLink="/categories"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          (click)="sidebarOpen = false"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Categories
+        </a>
+
+        <a
+          routerLink="/activity"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          (click)="sidebarOpen = false"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Activity Logs
+        </a>
+      </nav>
+
+      <div class="mt-6">
+        <button
+          (click)="themeService.toggle()"
+          class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          {{ themeService.isDark() ? '☀️ Light Mode' : '🌙 Dark Mode' }}
+        </button>
+      </div>
+
+      <div class="mt-4">
+        <p-button label="Logout" severity="danger" styleClass="w-full" (onClick)="logout()" />
+      </div>
+    </p-drawer>
+
+    <!-- Desktop Sidebar -->
+    <aside
+      class="hidden lg:flex w-72 flex-col min-h-screen bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800"
+    >
+      <div class="p-6 border-b border-slate-200 dark:border-slate-800">
+        <h1 class="text-xl font-bold">Inventory System</h1>
+
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Management Dashboard</p>
+      </div>
+
+      <nav class="flex-1 p-4 space-y-1">
+        <a
+          routerLink="/dashboard"
+          [routerLinkActiveOptions]="{ exact: true }"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Dashboard
+        </a>
+
+        <a
+          routerLink="/products"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Products
+        </a>
+
+        <a
+          routerLink="/categories"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Categories
+        </a>
+
+        <a
+          routerLink="/activity"
+          routerLinkActive="bg-blue-50 text-blue-600 border-l-4 border-blue-600 font-medium"
+          class="block px-4 py-3 border-l-4 border-transparent rounded-r-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+        >
+          Activity Logs
+        </a>
+      </nav>
+
+      <div class="p-4">
+        <button
+          (click)="themeService.toggle()"
+          class="w-full px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          {{ themeService.isDark() ? '☀️ Light Mode' : '🌙 Dark Mode' }}
+        </button>
+      </div>
+
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+        <p-button label="Logout" severity="danger" styleClass="w-full" (onClick)="logout()" />
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto">
+      <ng-content />
+    </main>
+  </div>
 </div>

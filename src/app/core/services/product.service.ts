@@ -9,8 +9,15 @@ import { environment } from '../../../environments/environment';
 export class ProductService {
   private http = inject(HttpClient);
 
-  getProducts(page = 1, search = '') {
-    return this.http.get(`${environment.apiUrl}/products?page=${page}&search=${search}`);
+  getProducts(page = 1, limit = 10, search = '', category = '') {
+    return this.http.get(`${environment.apiUrl}/products`, {
+      params: {
+        page,
+        limit,
+        search,
+        category,
+      },
+    });
   }
 
   createProduct(formData: FormData) {

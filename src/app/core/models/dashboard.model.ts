@@ -28,3 +28,8 @@ export interface RecentLog {
 
   createdAt: string;
 }
+
+export interface InventoryValueByCategory {
+  _id: string;
+  value: number;
+}

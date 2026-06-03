@@ -1,38 +1,78 @@
 <app-layout>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6">Activity Logs</h1>
+  <div
+    class="p-4 md:p-6 min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300"
+  >
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">
+        Activity Logs
+      </h1>
 
-    <table class="w-full border">
-      <thead>
-        <tr>
-          <th class="border p-2">Date</th>
-          <th class="border p-2">User</th>
-          <th class="border p-2">Action</th>
-          <th class="border p-2">Product</th>
-        </tr>
-      </thead>
+      <p class="mt-1 text-slate-500 dark:text-slate-400">
+        Track inventory transactions and user actions
+      </p>
+    </div>
 
-      <tbody>
-        @for (log of logs; track log._id) {
+    <!-- Activity Table -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm"
+    >
+      <p-table
+        [value]="logs"
+        responsiveLayout="scroll"
+        [stripedRows]="true"
+        styleClass="p-datatable-sm"
+      >
+        <ng-template pTemplate="header">
           <tr>
-            <td class="border p-2">
-              {{ log.createdAt }}
+            <th>Date</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Product</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-log>
+          <tr>
+            <td>
+              {{ log.createdAt | date: 'MMM d, y h:mm a' }}
             </td>
 
-            <td class="border p-2">
-              {{ log.user?.name }}
+            <td>
+              <span class="font-medium">
+                {{ log.user?.name || 'Unknown User' }}
+              </span>
             </td>
 
-            <td class="border p-2">
-              {{ log.action }}
+            <td>
+              <p-tag
+                [value]="log.action"
+                [severity]="
+                  log.action === 'STOCK_IN'
+                    ? 'success'
+                    : log.action === 'STOCK_OUT'
+                      ? 'warn'
+                      : log.action === 'DELETE_PRODUCT'
+                        ? 'danger'
+                        : 'info'
+                "
+              />
             </td>
 
-            <td class="border p-2">
-              {{ log.product?.name }}
+            <td>
+              {{ log.product?.name || '-' }}
             </td>
           </tr>
-        }
-      </tbody>
-    </table>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="4">
+              <div class="text-center py-10 text-slate-500">No activity logs found</div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
   </div>
 </app-layout>

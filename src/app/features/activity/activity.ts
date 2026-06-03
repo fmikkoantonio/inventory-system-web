@@ -1,11 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivityService } from '../../core/services/activity.service';
 import { LayoutComponent } from '../../shared/layout/layout';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.html',
-  imports: [LayoutComponent],
+  imports: [LayoutComponent, TableModule, TagModule, DatePipe],
 })
 export class ActivityComponent implements OnInit {
   private activityService = inject(ActivityService);

@@ -1,109 +1,195 @@
 <app-layout>
+  <p-confirmdialog />
+
   @if (isLoading) {
-    <div>Loading...</div>
+    <div class="flex items-center justify-center min-h-100 bg-slate-100 dark:bg-slate-950">
+      <i class="pi pi-spin pi-spinner text-4xl text-slate-600 dark:text-slate-300"></i>
+    </div>
   } @else {
-    <div class="p-6">
-      <h1 class="text-3xl font-bold mb-6">Products</h1>
-      <a routerLink="/products/new" class="border px-4 py-2 rounded"> Add Product </a>
+    <div
+      class="p-4 md:p-6 min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300"
+    >
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">
+            Products
+          </h1>
 
-      <div class="mb-4">
-        <input
-          type="text"
-          placeholder="Search products..."
-          [(ngModel)]="search"
-          class="border p-2 rounded w-full"
-        />
-        <button (click)="loadProducts()" class="border px-4 py-2 rounded">Search</button>
+          <p class="mt-1 text-slate-500 dark:text-slate-400">Manage your inventory products</p>
+        </div>
+
+        <p-button label="Add Product" icon="pi pi-plus" routerLink="/products/new" />
       </div>
-      <table class="w-full border">
-        <thead>
-          <tr>
-            <th class="border p-2">Image</th>
-            <th class="border p-2">Name</th>
-            <th class="border p-2">SKU</th>
-            <th class="border p-2">Category</th>
-            <th class="border p-2">Quantity</th>
-            <th class="border p-2">Price</th>
-            <th class="border p-2">Actions</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          @for (product of products; track product._id) {
+      <!-- Filters -->
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 mb-6"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input
+            pInputText
+            [(ngModel)]="searchTerm"
+            placeholder="Search products..."
+            class="w-full"
+          />
+
+          <p-select
+            [(ngModel)]="selectedCategory"
+            [options]="categories"
+            optionLabel="name"
+            optionValue="_id"
+            placeholder="All Categories"
+            class="w-full"
+          />
+
+          <p-button label="Search" icon="pi pi-search" (onClick)="searchProducts()" />
+        </div>
+      </div>
+
+      <!-- Products Table -->
+      <div
+        class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden"
+      >
+        <p-table
+          [value]="products"
+          responsiveLayout="scroll"
+          [stripedRows]="true"
+          styleClass="p-datatable-sm"
+        >
+          <ng-template pTemplate="header">
             <tr>
-              <td class="border p-2">
-                <img [src]="product.image" class="w-16 h-16 object-cover rounded" />
-              </td>
-              <td class="border p-2">
-                {{ product.name }}
+              <th>Image</th>
+              <th>Name</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Actions</th>
+            </tr>
+          </ng-template>
+
+          <ng-template pTemplate="body" let-product>
+            <tr>
+              <td>
+                <img
+                  [src]="product.image"
+                  [alt]="product.name"
+                  class="w-14 h-14 rounded-xl object-cover"
+                />
               </td>
 
-              <td class="border p-2">
+              <td>
+                <span class="font-medium">
+                  {{ product.name }}
+                </span>
+              </td>
+
+              <td>
                 {{ product.sku }}
               </td>
 
-              <td class="border p-2">
+              <td>
                 {{ product.category?.name || 'Uncategorized' }}
               </td>
 
-              <td class="border p-2">
-                {{ product.quantity }}
+              <td>
+                <p-tag
+                  [value]="product.quantity"
+                  [severity]="product.quantity <= 10 ? 'danger' : 'success'"
+                />
               </td>
 
-              <td class="border p-2">
-                {{ product.price }}
-              </td>
+              <td>₱{{ product.price | number: '1.2-2' }}</td>
 
-              <td class="border p-2">
-                <button
-                  [routerLink]="['/products/edit', product._id]"
-                  class="border px-3 py-1 rounded mr-2"
-                >
-                  Edit
-                </button>
+              <td>
+                <div class="flex flex-wrap gap-2">
+                  <p-button
+                    icon="pi pi-pencil"
+                    severity="info"
+                    pTooltip="Edit Product"
+                    [rounded]="true"
+                    [text]="true"
+                    [routerLink]="['/products/edit', product._id]"
+                  />
 
-                <button (click)="deleteProduct(product._id)" class="border px-3 py-1 rounded">
-                  Delete
-                </button>
-                <button (click)="openStockModal(product, 'IN')" class="border px-3 py-1 rounded">
-                  Stock In
-                </button>
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    pTooltip="Delete Product"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="deleteProduct(product._id)"
+                  />
 
-                <button (click)="openStockModal(product, 'OUT')" class="border px-3 py-1 rounded">
-                  Stock Out
-                </button>
+                  <p-button
+                    icon="pi pi-plus"
+                    severity="success"
+                    pTooltip="Stock in"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="openStockModal(product, 'IN')"
+                  />
+
+                  <p-button
+                    icon="pi pi-minus"
+                    severity="warn"
+                    pTooltip="Stock out"
+                    [rounded]="true"
+                    [text]="true"
+                    (onClick)="openStockModal(product, 'OUT')"
+                  />
+                </div>
               </td>
             </tr>
-          }
-        </tbody>
-      </table>
-      <div class="flex gap-2 mt-4">
-        <button (click)="previousPage()" class="border px-4 py-2 rounded">Previous</button>
-
-        <button (click)="nextPage()" class="border px-4 py-2 rounded">Next</button>
+          </ng-template>
+        </p-table>
       </div>
-    </div>
 
-    @if (showStockModal) {
-      <div class="fixed inset-0 flex items-center justify-center bg-black/50">
-        <div class="bg-white p-6 rounded">
-          <h2 class="text-xl font-bold mb-4">
-            {{ stockType === 'IN' ? 'Stock In' : 'Stock Out' }}
-          </h2>
+      <!-- Pagination -->
+      <div class="flex justify-center items-center gap-4 mt-6">
+        <p-button
+          label="Previous"
+          severity="secondary"
+          [disabled]="currentPage === 1"
+          (onClick)="previousPage()"
+        />
 
-          <input type="number" [(ngModel)]="stockQuantity" class="border p-2 rounded" />
+        <span class="text-slate-600 dark:text-slate-400">
+          Page {{ currentPage }} of {{ totalPages }}
+        </span>
 
-          <div class="mt-4 flex gap-2">
-            <button (click)="submitStockTransaction()" class="border px-4 py-2 rounded">
-              Save
-            </button>
+        <p-button
+          label="Next"
+          severity="secondary"
+          [disabled]="currentPage === totalPages"
+          (onClick)="nextPage()"
+        />
+      </div>
 
-            <button (click)="showStockModal = false" class="border px-4 py-2 rounded">
-              Cancel
-            </button>
+      <!-- Stock Dialog -->
+      <p-dialog
+        [(visible)]="showStockModal"
+        [modal]="true"
+        [closable]="true"
+        [draggable]="false"
+        [style]="{ width: '30rem' }"
+        [header]="stockType === 'IN' ? 'Stock In Product' : 'Stock Out Product'"
+      >
+        <div class="space-y-4">
+          <div>
+            <label class="block mb-2 font-medium"> Quantity </label>
+
+            <p-inputNumber [(ngModel)]="stockQuantity" [min]="1" styleClass="w-full" />
           </div>
         </div>
-      </div>
-    }
+
+        <ng-template pTemplate="footer">
+          <p-button label="Cancel" severity="secondary" (onClick)="showStockModal = false" />
+
+          <p-button label="Save" icon="pi pi-check" (onClick)="submitStockTransaction()" />
+        </ng-template>
+      </p-dialog>
+    </div>
   }
 </app-layout>

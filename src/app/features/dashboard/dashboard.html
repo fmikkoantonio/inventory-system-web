@@ -1,68 +1,145 @@
 <app-layout>
   @if (dashboardData$ | async; as data) {
-    <div class="p-6">
-      <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+    <div
+      class="p-4 md:p-6 min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300"
+    >
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">Dashboard</h1>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="border rounded p-4">
-          <h2>Total Products</h2>
-          <p class="text-3xl">
+        <p class="mt-1 text-slate-500 dark:text-slate-400">
+          Overview of your inventory performance
+        </p>
+      </div>
+
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
+        >
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Total Products</p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-blue-500">
             {{ data.stats.totalProducts }}
-          </p>
+          </h2>
         </div>
 
-        <div class="border rounded p-4">
-          <h2>Low Stock</h2>
-          <p class="text-3xl">
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
+        >
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Low Stock Items</p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-red-500">
             {{ data.stats.lowStockProducts }}
-          </p>
+          </h2>
         </div>
 
-        <div class="border rounded p-4">
-          <h2>Inventory Value</h2>
-          <p class="text-3xl">₱{{ data.stats.totalInventoryValue }}</p>
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
+        >
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Inventory Value</p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-emerald-500">
+            ₱{{ data.stats.totalInventoryValue | number }}
+          </h2>
         </div>
 
-        <div class="border rounded p-4">
-          <h2>Categories</h2>
-          <p class="text-3xl">
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-lg transition"
+        >
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Categories</p>
+
+          <h2 class="text-3xl md:text-4xl font-bold text-purple-500">
             {{ data.stats.totalCategories }}
-          </p>
+          </h2>
         </div>
       </div>
 
-      <!-- Low Stock Products -->
+      <!-- Content -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-8">
+        <!-- Low Stock -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
+        >
+          <h2 class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
+            Low Stock Products
+          </h2>
 
-      <div class="mt-6 border rounded p-4">
-        <h2 class="text-xl font-semibold mb-4">Low Stock Products</h2>
+          @if (data.lowStockProducts.length > 0) {
+            @for (product of data.lowStockProducts; track product._id) {
+              <div
+                class="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800 last:border-0"
+              >
+                <p class="font-medium text-slate-700 dark:text-slate-200">
+                  {{ product.name }}
+                </p>
 
-        @for (product of data.lowStockProducts; track product._id) {
-          <div class="flex justify-between border-b py-2">
-            <span>
-              {{ product.name }}
-            </span>
+                <span
+                  class="px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-600 dark:bg-red-950 dark:text-red-300"
+                >
+                  {{ product.quantity }}
+                </span>
+              </div>
+            }
+          } @else {
+            <div class="text-center py-10 text-slate-500 dark:text-slate-400">
+              No low-stock products 🎉
+            </div>
+          }
+        </div>
 
-            <span> Qty: {{ product.quantity }} </span>
+        <!-- Recent Activity -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
+        >
+          <h2 class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
+            Recent Activity
+          </h2>
+
+          @if (data.recentLogs.length > 0) {
+            @for (log of data.recentLogs; track log._id) {
+              <div class="py-3 border-b border-slate-100 dark:border-slate-800 last:border-0">
+                <p class="font-medium text-slate-700 dark:text-slate-200">
+                  {{ log.action }}
+                </p>
+
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                  {{ log.product?.name }}
+                </p>
+              </div>
+            }
+          } @else {
+            <div class="text-center py-10 text-slate-500 dark:text-slate-400">
+              No recent activity
+            </div>
+          }
+        </div>
+
+        <!-- Chart -->
+        <div
+          class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm"
+        >
+          <h2 class="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-100">
+            Inventory by Category
+          </h2>
+
+          <div class="h-[250px] md:h-[320px] flex items-center justify-center">
+            <canvas
+              baseChart
+              [data]="{
+                labels: pieChartLabels,
+                datasets: [
+                  {
+                    data: pieChartData,
+                  },
+                ],
+              }"
+              [options]="pieChartOptions"
+              type="pie"
+            >
+            </canvas>
           </div>
-        }
-      </div>
-
-      <!-- Recent Activity -->
-
-      <div class="mt-6 border rounded p-4">
-        <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
-
-        @for (log of data.recentLogs; track log._id) {
-          <div class="flex justify-between border-b py-2">
-            <span>
-              {{ log.action }}
-            </span>
-
-            <span>
-              {{ log.product?.name }}
-            </span>
-          </div>
-        }
+        </div>
       </div>
     </div>
   }

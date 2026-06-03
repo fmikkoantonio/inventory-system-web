@@ -1,35 +1,115 @@
 <app-layout>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6">Categories</h1>
+  <p-confirmdialog />
+  <p-toast />
 
-    <div class="flex gap-2 mb-6">
-      <input
-        [(ngModel)]="categoryName"
-        placeholder="Category name"
-        class="border p-2 rounded flex-1"
-      />
+  <div
+    class="p-4 md:p-6 min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300"
+  >
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">Categories</h1>
 
-      <button (click)="createCategory()" class="bg-black text-white px-4 py-2 rounded">
-        Add Category
-      </button>
+      <p class="mt-1 text-slate-500 dark:text-slate-400">Manage your product categories</p>
     </div>
 
-    <div class="border rounded">
-      @for (category of categories; track category._id) {
-        <div>
-          @if (editingCategoryId === category._id) {
-            <input [(ngModel)]="editingName" class="border p-2 rounded" />
+    <!-- Add Category -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm mb-6"
+    >
+      <div class="flex flex-col md:flex-row gap-4">
+        <input
+          pInputText
+          [(ngModel)]="categoryName"
+          placeholder="Enter category name"
+          class="flex-1"
+        />
 
-            <button (click)="saveEdit()">Save</button>
-          } @else {
-            {{ category.name }}
+        <p-button
+          label="Add Category"
+          icon="pi pi-plus"
+          severity="success"
+          (onClick)="createCategory()"
+        />
+      </div>
+    </div>
 
-            <button (click)="startEdit(category)">Edit</button>
+    <!-- Categories Table -->
+    <div
+      class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm"
+    >
+      <p-table
+        [value]="categories"
+        responsiveLayout="scroll"
+        [stripedRows]="true"
+        styleClass="p-datatable-sm"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Name</th>
+            <th style="width: 180px">Actions</th>
+          </tr>
+        </ng-template>
 
-            <button (click)="deleteCategory(category._id)">Delete</button>
-          }
-        </div>
-      }
+        <ng-template pTemplate="body" let-category>
+          <tr>
+            <td>
+              @if (editingCategoryId === category._id) {
+                <input pInputText [(ngModel)]="editingName" class="w-full" />
+              } @else {
+                <span class="font-medium">
+                  {{ category.name }}
+                </span>
+              }
+            </td>
+
+            <td>
+              <div class="flex gap-2">
+                @if (editingCategoryId === category._id) {
+                  <p-button
+                    icon="pi pi-check"
+                    severity="success"
+                    variant="text"
+                    rounded
+                    (onClick)="saveEdit()"
+                  />
+
+                  <p-button
+                    icon="pi pi-times"
+                    severity="secondary"
+                    variant="text"
+                    rounded
+                    (onClick)="editingCategoryId = null"
+                  />
+                } @else {
+                  <p-button
+                    icon="pi pi-pencil"
+                    severity="info"
+                    variant="text"
+                    rounded
+                    (onClick)="startEdit(category)"
+                  />
+
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    variant="text"
+                    rounded
+                    (onClick)="deleteCategory(category._id)"
+                  />
+                }
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="2">
+              <div class="text-center py-8 text-slate-500">No categories found</div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
     </div>
   </div>
 </app-layout>

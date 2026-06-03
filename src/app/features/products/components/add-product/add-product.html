@@ -1,31 +1,133 @@
-<div class="max-w-lg mx-auto">
-  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <input formControlName="name" placeholder="Name" class="w-full border p-2 rounded" />
+<app-layout>
+  <div
+    class="p-4 md:p-6 min-h-screen bg-slate-100 dark:bg-slate-950 transition-colors duration-300"
+  >
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+      <div>
+        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-100">
+          Add Product
+        </h1>
 
-    <input formControlName="sku" placeholder="SKU" class="w-full border p-2 rounded" />
+        <p class="mt-1 text-slate-500 dark:text-slate-400">
+          Create a new product in your inventory
+        </p>
+      </div>
 
-    <textarea
-      formControlName="description"
-      placeholder="Description"
-      class="w-full border p-2 rounded"
-    ></textarea>
+      <p-button
+        label="Back to Products"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        routerLink="/products"
+      />
+    </div>
 
-    <input type="number" formControlName="quantity" class="w-full border p-2 rounded" />
+    <!-- Form Card -->
+    <div
+      class="max-w-4xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6"
+    >
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Name -->
+        <div>
+          <label class="block mb-2 font-medium"> Product Name </label>
 
-    <input type="number" formControlName="price" class="w-full border p-2 rounded" />
+          <input
+            pInputText
+            formControlName="name"
+            placeholder="Enter product name"
+            class="w-full"
+          />
+        </div>
 
-    <select formControlName="category" class="w-full border p-2 rounded">
-      <option value="">Select Category</option>
+        <!-- SKU -->
+        <div>
+          <label class="block mb-2 font-medium"> SKU </label>
 
-      @for (category of categories; track category._id) {
-        <option [value]="category._id">
-          {{ category.name }}
-        </option>
-      }
-    </select>
+          <input pInputText formControlName="sku" placeholder="Enter SKU" class="w-full" />
+        </div>
 
-    <input type="file" (change)="onFileSelected($event)" />
+        <!-- Description -->
+        <div>
+          <label class="block mb-2 font-medium"> Description </label>
 
-    <button type="submit" class="bg-black text-white px-4 py-2 rounded">Create Product</button>
-  </form>
-</div>
+          <textarea
+            pTextarea
+            rows="4"
+            formControlName="description"
+            placeholder="Product description"
+            class="w-full"
+          ></textarea>
+        </div>
+
+        <!-- Quantity & Price -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block mb-2 font-medium"> Quantity </label>
+
+            <p-inputNumber formControlName="quantity" [min]="0" styleClass="w-full" />
+          </div>
+
+          <div>
+            <label class="block mb-2 font-medium"> Price </label>
+
+            <p-inputNumber
+              formControlName="price"
+              mode="currency"
+              currency="PHP"
+              locale="en-PH"
+              styleClass="w-full"
+            />
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div>
+          <label class="block mb-2 font-medium"> Category </label>
+
+          <p-select
+            formControlName="category"
+            [options]="categories"
+            optionLabel="name"
+            optionValue="_id"
+            placeholder="Select Category"
+            class="w-full"
+          />
+        </div>
+
+        <!-- Image Upload -->
+        <div>
+          <label class="block mb-2 font-medium"> Product Image </label>
+
+          <input
+            type="file"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            class="block w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-500 file:text-white hover:file:bg-blue-600"
+          />
+        </div>
+
+        <!-- Image Preview -->
+        @if (selectedFile) {
+          <div>
+            <p class="mb-2 font-medium">Selected Image</p>
+
+            <img [src]="imagePreview" class="w-40 h-40 object-cover rounded-xl border" />
+          </div>
+        }
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4">
+          <p-button label="Cancel" icon="pi pi-times" severity="secondary" routerLink="/products" />
+
+          <p-button
+            label="Create Product"
+            icon="pi pi-check"
+            type="submit"
+            severity="success"
+            [loading]="isLoading"
+          />
+        </div>
+      </form>
+    </div>
+  </div>
+</app-layout>
